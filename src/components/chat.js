@@ -11,20 +11,29 @@ const pubnub = new PubNub({
     ssl: true,
   });
 
+function guid() {
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
 export default class Chat extends Component {
     constructor(props) {
         super(props);
-        
         this.state = {
             messages: [
             ],
             channelID: "Conversation " + this.props.conversationData.conversationID,
         }
-
-       
     }
+
     messageListener = {
         message: (m) => {
+            console.log(m);
             var newMessage = new Message({id: m.message.such.user._id, message: m.message.such.text})
             var newList = this.state.messages;
             newList.push(newMessage);
@@ -34,8 +43,7 @@ export default class Chat extends Component {
 
     componentWillMount() {
         //Set up pubnub stuff
-        console.log(this.props.conversationData.conversationID);
-        console.log("Did mount called!");
+        console.log(this.state.channelID);
 
         pubnub.setUUID(this.props.conversationData.counselorID);
 
@@ -63,18 +71,26 @@ export default class Chat extends Component {
             withPresence: true,
         })
     }
+    componentWillUnmount() {
+        pubnub.removeListener(this.messageListener);
+        pubnub.unsubscribeAll();
+    }
 
     _pushMessage(recipient, message) {
+        console.log(message);
         var newMessage = {
+            _id: guid(),
             createdAt: new Date(),
             text: message,
             user : {
-                _id: this.props.conversationData.counselorID,
+                _id: 0,
                 avatar: "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"
             }
         }
+        console.log(newMessage);
     pubnub.publish({
         channel: this.state.channelID,
+        
         message : {
             such: newMessage,
         }
@@ -92,10 +108,10 @@ export default class Chat extends Component {
   }
 
     render() {
-        console.log(this.props.conversationData);
+       
         var styles = _.cloneDeep(this.constructor.styles);
         return (
-            <div>
+            <div style={styles.cont}>
             <ChatFeed
             style={{padding: 10}}
             messages={this.state.messages} // Boolean: list of message objects
@@ -130,7 +146,11 @@ export default class Chat extends Component {
 }
 
 Chat.styles = {
+    cont : {
+        padding: 10,
+    },
     background: {
+        padding: 10,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -140,11 +160,11 @@ Chat.styles = {
     inputStyle : {
         borderWith: 0,
         padding: 10,
-        marginLeft: 20,
+      
         borderRadius: 10,
         fontSize: 20,
         marginTop: 50,
         height: 30,
-        width: '80%',
+        width: '98%',
     }
 }

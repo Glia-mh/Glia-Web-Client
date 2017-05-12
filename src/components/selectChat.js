@@ -30,7 +30,7 @@ export default class ChatList extends Component {
     componentWillMount() {
         //Send requests to the api
         if(this.props.match.params.counselorID !== "") {
-            var url = "http://glia-env.y5rqrbpijs.us-west-2.elasticbeanstalk.com/Glia/counselor/" + this.props.match.params.counselorID;
+            var url = "http://glia-env.y5rqrbpijs.us-west-2.elasticbeanstalk.com/Glia/counselor/" + this.props.match.params.counselorID + "/";
             fetch(url)
             .then((response) => {
                 if(response.status === 200) {
@@ -112,7 +112,6 @@ export default class ChatList extends Component {
                 )
                 }
             })
-            
             return (
               <Sidebar sidebar={[items,list]}
               docked={true}
@@ -121,8 +120,6 @@ export default class ChatList extends Component {
                <Chat key={this.state.selectedIndex} conversationData={this.state.data[this.state.selectedIndex]} />
               
               </Sidebar>
-                   
-            
             )
         }
     }
