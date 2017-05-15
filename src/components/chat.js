@@ -5,6 +5,8 @@ var _ = require('lodash');
 
 import PubNub from 'pubnub';
 
+import MessageFeed from './chatUI/MessageFeed.js';
+
 const pubnub = new PubNub({
     subscribeKey: "sub-c-db3b3db0-2d30-11e7-87b6-02ee2ddab7fe",
     publishKey: "pub-c-db8bb359-b20e-415f-80d9-0958db03625c",
@@ -55,9 +57,7 @@ export default class Chat extends Component {
             var newMessages = [];
             for(var i = 0; i < response.messages.length; i++) {
                 var obj = response.messages[i].entry.such;
-                console.log(obj);
-                var message = new Message({id: obj.user._id, message: obj.text })
-                newMessages.push(message);
+                newMessages.push(obj);
             }
             this.setState({
                 messages: newMessages,
@@ -112,29 +112,10 @@ export default class Chat extends Component {
         var styles = _.cloneDeep(this.constructor.styles);
         return (
             <div style={styles.cont}>
-            <ChatFeed
-            style={{padding: 10}}
-            messages={this.state.messages} // Boolean: list of message objects
-            isTyping={false} // Boolean: is the recipient typing
-            hasInputField={false} // Boolean: use our input, or use your own
-            bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
-            // JSON: Custom bubble styles
-            bubbleStyles={
-                    {
-                    text: {
-                        fontSize: 15,
-                    },
-                    chatbubble: {
-                       
-                        borderRadius: 70,
-                        padding: 10
-                    },
-                    userBubble: {
-                        backgroundColor: '#2dd1ae'
-                    }
-                }
-            } />
-
+            <MessageFeed
+            messages={this.state.messages}
+            userId={this.props.conversationData.counselorID}
+            />
             <form onSubmit={this._onMessageSubmit.bind(this)}>
                 <input ref="message" placeholder="Type a message..." style={styles.inputStyle} />
             </form>
