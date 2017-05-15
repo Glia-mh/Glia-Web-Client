@@ -23,7 +23,7 @@ export default class MessageFeed extends Component {
             }
             else {
                 return (
-                    <div>
+                    <div style={styles.leftBubble}>
                     <MessageBubble message={message} />
                     </div>
                 )
@@ -47,5 +47,8 @@ MessageFeed.styles = {
         marginLeft: 'auto',
         marginRight: 0,
         marginTop: 20,
+    },
+    leftBubble : {
+        marginTop: 10,
     }
 }

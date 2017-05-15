@@ -23,12 +23,9 @@ export default class MessageBubble extends Component {
         console.log(styleList);
         return (
             <div style={styles.container}>
-                <div style={styles.textCont}>
-                    
-                    <div><span style={styles.textStyle}>{this.props.message.user.name}</span></div>
-                    <div style={styleList}>
+                <div style={styles.textCont}> 
                         <p>{this.props.message.text}</p>
-                    </div>
+                        <span style={styles.textStyle}>Sent By: {this.props.message.user.name}</span>
                 </div>
             </div>
         )}
@@ -45,19 +42,19 @@ MessageBubble.styles = {
         borderRadius: 15,
     },
     textCont: { 
-        display: 'flex',
         flexDirection: 'column',
+        backgroundColor: "#dbdbdb",
+        borderRadius: 5,
+        paddingLeft: 10,
+        paddingRight: 5,
     },
     textStyle : {
-        textAlign: 'center',
-        color: "#dbdbdb",
+        color: "#000000",
         fontSize: 10,
     },
     messageStyle : {
         justifyContent: "center",
         backgroundColor: "#dbdbdb",
-        borderRadius: 20,
-        padding: 10,
     },
     yourMessageStyle : {
         backgroundColor: "#2dd1ae",
