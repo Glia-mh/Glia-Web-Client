@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import { ChatFeed, Message } from 'react-chat-ui';
-import ListItem from './listItem.js';
+
+
 var _ = require('lodash');
 import Sidebar from 'react-sidebar';
-import SendBar from './sendBar.js';
-import {
-    MorphIcon,
-    CloseButton,
-    NavButton,
-    PlusButton,
-} from 'react-svg-buttons';
+
 import Chat from './chat.js';
+import PubNub from 'pubnub';
 
 
 export default class ChatList extends Component {
@@ -21,17 +16,16 @@ export default class ChatList extends Component {
             selectedIndex: 0,
             isAuth: false,
             data: [],
-            messages: [
-                (new Message({ id: 1, message: "I'm the recipient! (The person you're talking to)" })), // Gray bubble
-                (new Message({ id: 0, message: "I'm you -- the blue bubble!" })) // Blue bubble
-            ],
+            numUsers: 0,
         }
     }
     componentWillMount() {
+
+
         //Send requests to the api
         if(this.props.match.params.counselorID !== "") {
-            var url = "http://glia-env.y5rqrbpijs.us-west-2.elasticbeanstalk.com/Glia/counselor/" + this.props.match.params.counselorID + "/";
-            fetch(url)
+            var url1 = "http://glia-env.y5rqrbpijs.us-west-2.elasticbeanstalk.com/Glia/counselor/" + this.props.match.params.counselorID + "/";
+            fetch(url1)
             .then((response) => {
                 if(response.status === 200) {
                     console.log(response);
@@ -88,7 +82,7 @@ export default class ChatList extends Component {
             var items = [];
             items.push(
                 <div style={styles.background}> 
-                    <img style={{width: 200, height: 70,}} src={require('../glialogo.png')}/>
+                    <img style={{width: 200, height: 70,}} src={require('../glialogo.png')} alt=""/>
                 </div>
             )
             var list = this.state.data.map((datum, i) => {
@@ -116,7 +110,7 @@ export default class ChatList extends Component {
               <Sidebar sidebar={[items,list]}
               docked={true}
                >
-               <div style={styles.background} />
+               <div style={styles.background}/>
                <Chat key={this.state.selectedIndex} conversationData={this.state.data[this.state.selectedIndex]} />
               </Sidebar>
             )
@@ -130,6 +124,11 @@ ChatList.styles = {
     },
     listCont: {
        flex: 1,
+    },
+    countStyle : {
+        padding: 20,
+        fontSize: 20,
+        color: "#FFFFFF",
     },
     chat :{
         flexGrow: 3,

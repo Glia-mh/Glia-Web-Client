@@ -5,16 +5,11 @@ import MessageBubble from './MessageBubble.js';
 
 export default class MessageFeed extends Component {
 
-    constructor(props) {
-        super(props);
-        //this.props.messages
-    }
-
     render() {
         var styles = _.cloneDeep(this.constructor.styles);
 
         var messageList = this.props.messages.map((message,index) => {
-            console.log(this.props.userID, message.user);
+           
             if(this.props.userID === message.user._id) {
                 return (
                     <div style={styles.rightAlign}>

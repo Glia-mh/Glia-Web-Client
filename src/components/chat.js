@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Conversation from 'chat-template/dist/Conversation';
-import { ChatFeed, Message } from 'react-chat-ui'
 var _ = require('lodash');
 
 import PubNub from 'pubnub';
@@ -30,23 +28,35 @@ export default class Chat extends Component {
             messages: [
             ],
             channelID: "Conversation " + this.props.conversationData.conversationID,
+            numUsers: 0,
         }
+
     }
 
     messageListener = {
         message: (m) => {
-            console.log(m);
+           
             var newMessage = m.message.such;
             var newList = this.state.messages;
             newList.push(newMessage);
             this.setState({messages: newList})
-        }
+        },
+        presence: (p) => {
+            this.setState({ numUsers: p.occupancy })
+        },
     }
 
     componentWillMount() {
         //Set up pubnub stuff
-        console.log(this.state.channelID);
+       
+        pubnub.hereNow({
+            channels: [this.state.channelID],
 
+        },(status,response) => {
+            this.setState({
+                numUsers: response.totalOccupancy,
+            })
+        })
         pubnub.setUUID(this.props.conversationData.counselorID);
 
         pubnub.history({
@@ -76,7 +86,7 @@ export default class Chat extends Component {
     }
 
     _pushMessage(recipient, message) {
-        console.log(message);
+        
         var newMessage = {
             _id: guid(),
             createdAt: new Date(),
@@ -87,7 +97,7 @@ export default class Chat extends Component {
                 avatar: "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"
             }
         }
-        console.log(newMessage);
+      
     pubnub.publish({
         channel: this.state.channelID,
         
@@ -95,8 +105,8 @@ export default class Chat extends Component {
             such: newMessage,
         }
     },(response, error) => {
-        console.log(response);
-        console.log(this.state.messages);
+        //TODO: Error handling
+    
     })
   }
 
@@ -114,6 +124,7 @@ export default class Chat extends Component {
         var styles = _.cloneDeep(this.constructor.styles);
         return (
             <div style={styles.cont}>
+                <p style={styles.countStyle}> {this.state.numUsers} user(s) in the conversation </p>
             <MessageFeed
             key={this.state.messages.length}
             messages={this.state.messages}
@@ -132,6 +143,11 @@ export default class Chat extends Component {
 Chat.styles = {
     cont : {
         padding: 10,
+    },
+    countStyle : {
+        padding: 20,
+        fontSize: 20,
+        color: "#dbdbdb",
     },
     background: {
         padding: 10,

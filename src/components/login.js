@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
-import Form from 'react-uikit-form';
+
 import FormInput from 'react-uikit-form/lib/form-input';
 var _ = require('lodash');
 
 import {
-  BrowserRouter as Router,
-  Route,
   Link,
-  hashHistory
 } from 'react-router-dom';
 
 export default class LoginPage extends Component {
@@ -46,7 +43,7 @@ export default class LoginPage extends Component {
             
             <div style={styles.background}>
                 <div>
-                    <img style={styles.centerImage} src={require('../glialogo.png')} />
+                    <img style={styles.centerImage} src={require('../glialogo.png')} alt="" />
                 </div>
                 <form>
                  <FormInput

@@ -7,6 +7,10 @@ export default class MessageBubble extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            isFlagged: false,
+        }
         //props.message should correspond to exactly one message
     }
 
@@ -20,7 +24,7 @@ export default class MessageBubble extends Component {
             styleList.push(styles.yourMessageStyle);
 
         }
-        console.log(styleList);
+       
         if(this.props.isOwnMessage) {
             return (
                  <div>
@@ -31,10 +35,32 @@ export default class MessageBubble extends Component {
             </div>
             )
         }
+        else if(this.state.isFlagged) {
+            return (
+                 <div>
+                <div style={styles.flaggedBG}
+                onClick={() => {
+                    this.setState({
+                        isFlagged: false,
+                    })
+                }}
+                > 
+                    <p>{this.props.message.text}</p>
+                </div>
+                <p style={styles.textStyle}>Sent By: {this.props.message.user.name}</p>
+            </div>
+            )
+        }
         return (
             <div>
                 
-                <div style={styles.textCont}> 
+                <div style={styles.textCont}
+                onClick={() => {
+                    this.setState({
+                        isFlagged: true,
+                    })
+                }}
+                > 
                     <p>{this.props.message.text}</p>
                 </div>
                 <p style={styles.textStyle}>Sent By: {this.props.message.user.name}</p>
@@ -51,6 +77,15 @@ MessageBubble.styles = {
         width: 30,
         height: 30,
         borderRadius: 15,
+    },
+    flaggedBG : {
+        backgroundColor: "#F44336",
+        borderRadius: 40,
+        paddingTop: 3,
+        width: 100,
+        paddingBottom: 3,
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     textCont: {
         backgroundColor: "#dbdbdb",
