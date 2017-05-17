@@ -118,7 +118,6 @@ export default class ChatList extends Component {
                >
                <div style={styles.background} />
                <Chat key={this.state.selectedIndex} conversationData={this.state.data[this.state.selectedIndex]} />
-              
               </Sidebar>
             )
         }

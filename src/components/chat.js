@@ -36,7 +36,7 @@ export default class Chat extends Component {
     messageListener = {
         message: (m) => {
             console.log(m);
-            var newMessage = new Message({id: m.message.such.user._id, message: m.message.such.text})
+            var newMessage = m.message.such;
             var newList = this.state.messages;
             newList.push(newMessage);
             this.setState({messages: newList})
@@ -53,7 +53,6 @@ export default class Chat extends Component {
             channel: this.state.channelID,
             count: 10,
         },(status, response) => {
-           
             var newMessages = [];
             for(var i = 0; i < response.messages.length; i++) {
                 var obj = response.messages[i].entry.such;
@@ -84,6 +83,7 @@ export default class Chat extends Component {
             text: message,
             user : {
                 _id: 0,
+                name: "Counselor",
                 avatar: "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"
             }
         }
@@ -96,10 +96,12 @@ export default class Chat extends Component {
         }
     },(response, error) => {
         console.log(response);
+        console.log(this.state.messages);
     })
   }
 
   _onMessageSubmit(e) {
+    console.log(e);
     var input = this.refs.message;
     e.preventDefault();
     if (!input.value) {return false;}
@@ -113,8 +115,9 @@ export default class Chat extends Component {
         return (
             <div style={styles.cont}>
             <MessageFeed
+            key={this.state.messages.length}
             messages={this.state.messages}
-            userId={this.props.conversationData.counselorID}
+            userID={0}
             />
             <form onSubmit={this._onMessageSubmit.bind(this)}>
                 <input ref="message" placeholder="Type a message..." style={styles.inputStyle} />

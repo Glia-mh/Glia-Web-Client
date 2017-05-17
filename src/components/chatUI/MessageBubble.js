@@ -21,12 +21,23 @@ export default class MessageBubble extends Component {
 
         }
         console.log(styleList);
-        return (
-            <div style={styles.container}>
-                <div style={styles.textCont}> 
-                        <p>{this.props.message.text}</p>
-                        <span style={styles.textStyle}>Sent By: {this.props.message.user.name}</span>
+        if(this.props.isOwnMessage) {
+            return (
+                 <div>
+                <div style={styles.rightMessageStyle}> 
+                    <p style={styles.counselorText}>{this.props.message.text}</p>
                 </div>
+                <p style={styles.textStyle}>Sent By: {this.props.message.user.name}</p>
+            </div>
+            )
+        }
+        return (
+            <div>
+                
+                <div style={styles.textCont}> 
+                    <p>{this.props.message.text}</p>
+                </div>
+                <p style={styles.textStyle}>Sent By: {this.props.message.user.name}</p>
             </div>
         )}
 
@@ -41,14 +52,17 @@ MessageBubble.styles = {
         height: 30,
         borderRadius: 15,
     },
-    textCont: { 
-        flexDirection: 'column',
+    textCont: {
         backgroundColor: "#dbdbdb",
-        borderRadius: 5,
+        borderRadius: 40,
+        paddingTop: 3,
+        width: 100,
+        paddingBottom: 3,
         paddingLeft: 10,
-        paddingRight: 5,
+        paddingRight: 10,
     },
     textStyle : {
+        opacity: 0.8,
         color: "#000000",
         fontSize: 10,
     },
@@ -59,4 +73,16 @@ MessageBubble.styles = {
     yourMessageStyle : {
         backgroundColor: "#2dd1ae",
     },
+    rightMessageStyle : {
+        backgroundColor: "#2dd1ae",
+        paddingTop: 3,
+        borderRadius: 40,
+        width: 100,
+        paddingBottom: 3,
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    counselorText : {
+        color: "#FFFFFF",
+    }
 }

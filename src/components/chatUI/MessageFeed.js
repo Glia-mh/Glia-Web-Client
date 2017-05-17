@@ -14,6 +14,7 @@ export default class MessageFeed extends Component {
         var styles = _.cloneDeep(this.constructor.styles);
 
         var messageList = this.props.messages.map((message,index) => {
+            console.log(this.props.userID, message.user);
             if(this.props.userID === message.user._id) {
                 return (
                     <div style={styles.rightAlign}>
@@ -46,7 +47,7 @@ MessageFeed.styles = {
     rightAlign: {
         marginLeft: 'auto',
         marginRight: 0,
-        marginTop: 20,
+        marginTop: 10,
     },
     leftBubble : {
         marginTop: 10,
