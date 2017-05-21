@@ -14,8 +14,8 @@ class App extends Component {
     return (
      <Router>
        <div>
-       <Route path='/login' component={LoginPage} />
-       <Route path='/select/:counselorID' component={ChatList} />
+       <Route path='/login' component={LoginPage}/>
+       <Route path='/select/:token' component={ChatList} />
        </div>
        </Router>
     );

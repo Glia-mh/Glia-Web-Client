@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "chat-template": "0.0.25",
+    "history": "^4.6.1",
     "pubnub": "^4.8.0",
     "react": "^15.5.4",
     "react-chat-ui": "0.0.28",

@@ -3,10 +3,10 @@ import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
 
 import FormInput from 'react-uikit-form/lib/form-input';
 var _ = require('lodash');
+import createHistory from 'history/createBrowserHistory';
 
-import {
-  Link,
-} from 'react-router-dom';
+
+const history = createHistory()
 
 export default class LoginPage extends Component {
 
@@ -14,10 +14,10 @@ export default class LoginPage extends Component {
         super(props);
         this.state = {
             loading: false,
-            counselorID: "",
+            counselorUsername: "",
+            counselorPassword: "",
         }
         this.toggle = this.toggle.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
     toggle() {
     this.setState({
@@ -27,13 +27,6 @@ export default class LoginPage extends Component {
 
 
     //Handle transition logic
-    }
-
-    handleChange(value) {
-        console.log(value.target.value);
-        this.setState({
-            counselorID: value.target.value,
-        })
     }
 
 
@@ -46,18 +39,53 @@ export default class LoginPage extends Component {
                     <img style={styles.centerImage} src={require('../glialogo.png')} alt="" />
                 </div>
                 <form>
-                 <FormInput
-                    style={styles.inputStyle}
-                    placeholder='Counselor ID'
-                    margin='right bottom'
-                    onChange={this.handleChange}
-                    />
+                 <input 
+                 ref="username"
+                 placeholder="Username"
+                 style={styles.inputStyle}/>
+                 <br/>
+                 <input style={styles.inputStyle}
+                 ref="password"
+                 type="password"
+                 placeholder="Password"
+                 />
                 </form>
-                <Link to={'/select/' + this.state.counselorID}>
                     <LaddaButton
                     style={styles.buttonStyle}
                     loading={this.state.loading}
-                    onClick={this.toggle}
+                    onClick={() => {
+                        console.log(this.refs.username.value);
+                        console.log(this.refs.password.value.toString());
+
+
+                        this.toggle
+
+                        var data = new FormData();
+                        data.append("username",this.refs.username.value);
+                        data.append("password", this.refs.password.value);
+
+                        fetch('http://107.170.234.65:8000/api-token-auth/', {
+                            method: "POST",
+                            body : data,
+                        })
+                        .then((response) => {
+                            console.log(response);
+                            if(response.status === 200) {
+                                response.json()
+                                .then((data) => {
+                                    console.log(data);
+                                history.push('/select/' + data.token);
+                                    location.reload();
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.refs.username = "";
+                            this.refs.password = "";
+                            location.reload();
+                        })
+                        }}
                     data-color="#29c1a0"
                     data-size={XL}
                     data-style={SLIDE_UP}
@@ -67,7 +95,7 @@ export default class LoginPage extends Component {
                     >
                     Login
                 </LaddaButton>
-                </Link>
+              
 
                 <p style={styles.textStyle}> If you would like to be a counselor, please send an email to gliamentalhealth@gmail.com. </p>
             </div>
@@ -106,7 +134,7 @@ LoginPage.styles = {
         color: '#FFFFFF',
         borderRadius: 10,
         fontSize: 20,
-        marginTop: 50,
+        marginTop: 20,
          backgroundColor: '#2dd1ae',
         height: 30,
         width: 280,

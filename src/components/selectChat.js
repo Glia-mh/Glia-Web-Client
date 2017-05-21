@@ -21,38 +21,22 @@ export default class ChatList extends Component {
     }
     componentWillMount() {
 
-
+  // this.props.match.params.token or w/e
         //Send requests to the api
-        if(this.props.match.params.counselorID !== "") {
-            var url1 = "http://glia-env.y5rqrbpijs.us-west-2.elasticbeanstalk.com/Glia/counselor/" + this.props.match.params.counselorID + "/";
-            fetch(url1)
-            .then((response) => {
-                if(response.status === 200) {
-                    console.log(response);
-                    this.setState({
-                        isAuth: true,
-                    })
-                }
-                else {
-                    console.log(response);
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        }
-        var url = "http://glia-env.y5rqrbpijs.us-west-2.elasticbeanstalk.com/Glia/conversation/?format=json";
+        var url = "http://107.170.234.65:8000/Glia/conversation/";
         fetch(url,{
             headers: {
                 'Accept': 'application/json',
+                'Authorization' : "Token " + this.props.match.params.token,
                 'Content-Type': 'application/json',
         }})
         .then((response) => {
+            console.log(response);
             response.json()
             .then((data) => {
+                console.log(data);
                 var newArr = [];
                 for(var i = 0; i < data.length; i++) {
-                    
                     newArr.push(data[i]);
                 }
                 this.setState({
@@ -70,51 +54,47 @@ export default class ChatList extends Component {
     render() {
 
         var styles = _.cloneDeep(this.constructor.styles);
-
-        if(this.state.isAuth === false) {
-            return (<h1> Unauthorized request </h1>);
-        }
-        else if(this.state.data.length === 0) {
-            return ( <h1> Loading... </h1>)
-        }
-        else {
             //Data is filled at this point
-            var items = [];
-            items.push(
-                <div style={styles.background}> 
-                    <img style={{width: 200, height: 70,}} src={require('../glialogo.png')} alt=""/>
-                </div>
-            )
-            var list = this.state.data.map((datum, i) => {
-              //  console.log(this.state.data[i]);
-                if(i === this.state.selectedIndex) {
-                    return (
-                       <div key={i}
-                       onClick={(e) => this.selectConversation(e, i)}
-                       >
-                         <h2 key={i} style={styles.selectedText}> {datum.conversationTitle} </h2>
-                        </div> 
-                         )
-                    }
-                else {
-                    return (
+        var items = [];
+        items.push(
+            <div style={styles.background}> 
+                <img style={{width: 200, height: 70,}} src={require('../glialogo.png')} alt=""/>
+            </div>
+        )
+        var list = this.state.data.map((datum, i) => {
+            //  console.log(this.state.data[i]);
+            if(i === this.state.selectedIndex) {
+                return (
                     <div key={i}
                     onClick={(e) => this.selectConversation(e, i)}
                     >
-                    <h2 key={i} style={styles.text}> {datum.conversationTitle} </h2>
-                    </div>
-                )
+                        <h2 key={i} style={styles.selectedText}> {datum.conversationTitle} </h2>
+                    </div> 
+                        )
                 }
-            })
-            return (
-              <Sidebar sidebar={[items,list]}
-              docked={true}
-               >
-               <div style={styles.background}/>
-               <Chat key={this.state.selectedIndex} conversationData={this.state.data[this.state.selectedIndex]} />
-              </Sidebar>
-            )
+            else {
+                return (
+                <div key={i}
+                onClick={(e) => this.selectConversation(e, i)}
+                >
+                <h2 key={i} style={styles.text}> {datum.conversationTitle} </h2>
+                </div>
+            )}
+        })
+
+        console.log(this.state.data[this.state.selectedIndex]);
+        console.log(this.state.selectedIndex);
+        if(this.state.data.length == 0) {
+            return <h1> Loading ... </h1>
         }
+        return (
+            <Sidebar sidebar={[items,list]}
+            docked={true}
+            >
+            <div style={styles.background}/>
+            <Chat key={this.state.selectedIndex} conversationData={this.state.data[this.state.selectedIndex]} />
+            </Sidebar>
+        )
     }
 }
 
@@ -125,11 +105,7 @@ ChatList.styles = {
     listCont: {
        flex: 1,
     },
-    countStyle : {
-        padding: 20,
-        fontSize: 20,
-        color: "#FFFFFF",
-    },
+    
     chat :{
         flexGrow: 3,
         flex: 3,

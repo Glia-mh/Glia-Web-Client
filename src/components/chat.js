@@ -24,10 +24,11 @@ function s4() {
 export default class Chat extends Component {
     constructor(props) {
         super(props);
+        console.log(this.props);
         this.state = {
             messages: [
             ],
-            channelID: "Conversation " + this.props.conversationData.conversationID,
+            channelID: "Conversation " + this.props.conversationData.id,
             numUsers: 0,
         }
 
@@ -93,7 +94,7 @@ export default class Chat extends Component {
             text: message,
             user : {
                 _id: 0,
-                name: "Counselor",
+                name:  this.props.conversationData.counselor.counselorName,
                 avatar: "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"
             }
         }
